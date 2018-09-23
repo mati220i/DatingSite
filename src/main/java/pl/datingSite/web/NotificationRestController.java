@@ -41,4 +41,10 @@ public class NotificationRestController {
         notificationService.newWaveNotification(from, to);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/newKiss", method = RequestMethod.PUT)
+    public ResponseEntity newKissNotification(@RequestParam("from") String from, @RequestParam("to") String to) {
+        notificationService.newKissNotification(from, to);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

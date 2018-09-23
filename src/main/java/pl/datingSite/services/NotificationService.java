@@ -64,8 +64,21 @@ public class NotificationService {
         User userTo = userRepository.getUserByUserName(to);
 
         String topic = "Użytkownik " + userFrom.getName() + " (" + userFrom.getUsername() + ") pomachał Ci";
-        String content = "Użytkownik o imieniu " + userFrom.getName() + " ( " + userFrom.getUsername() + " ) pomachał Ci. " +
+        String content = "Użytkownik o imieniu " + userFrom.getName() + " '" + userFrom.getUsername() + "' pomachał Ci. " +
                 "Ty też możesz to zrobic wchodząc na jego profil a następnie klikając przycisk \"łapki\".";
+
+        Notification notification = new Notification(topic, content);
+        newNotification(notification, userTo);
+    }
+
+    @Transactional
+    public void newKissNotification(String from, String to) {
+        User userFrom = userRepository.getUserByUserName(from);
+        User userTo = userRepository.getUserByUserName(to);
+
+        String topic = "Użytkownik " + userFrom.getName() + " (" + userFrom.getUsername() + ") wysłał Ci całusa";
+        String content = "Użytkownik o imieniu " + userFrom.getName() + " '" + userFrom.getUsername() + "' wysłał Ci całusa. " +
+                "Ty też możesz to zrobic wchodząc na jego profil a następnie klikając przycisk \"ust\".";
 
         Notification notification = new Notification(topic, content);
         newNotification(notification, userTo);

@@ -42,6 +42,9 @@ public class User {
     @Cascade(org.hibernate.annotations.CascadeType.MERGE)
     private AppearanceAndCharacter appearanceAndCharacter;
 
+    @OneToOne
+    private Friends friends;
+
     @ElementCollection
     private Set<String> interests;
 
@@ -215,6 +218,14 @@ public class User {
         this.fake = fake;
     }
 
+    public Friends getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Friends friends) {
+        this.friends = friends;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -237,6 +248,7 @@ public class User {
                 ", interests=" + interests +
                 ", fake=" + fake +
                 ", avatar=" + avatar +
+                ", friends=" + friends +
                 '}';
     }
 }
