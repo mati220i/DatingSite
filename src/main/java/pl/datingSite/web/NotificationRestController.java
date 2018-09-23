@@ -35,4 +35,10 @@ public class NotificationRestController {
         notificationService.deleteNotification(notification);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/newWave", method = RequestMethod.PUT)
+    public ResponseEntity newWaveNotification(@RequestParam("from") String from, @RequestParam("to") String to) {
+        notificationService.newWaveNotification(from, to);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

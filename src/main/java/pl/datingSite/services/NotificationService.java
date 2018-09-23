@@ -9,6 +9,7 @@ import pl.datingSite.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -55,5 +56,24 @@ public class NotificationService {
 
     public void deleteNotification(Notification notification) {
         notificationRepository.delete(notification);
+    }
+
+    @Transactional
+    public void newWaveNotification(String from, String to) {
+        User userFrom = userRepository.getUserByUserName(from);
+        User userTo = userRepository.getUserByUserName(to);
+
+        String topic = "Użytkownik " + userFrom.getName() + " (" + userFrom.getUsername() + ") pomachał Ci";
+        String content = "Użytkownik o imieniu " + userFrom.getName() + " ( " + userFrom.getUsername() + " ) pomachał Ci. " +
+                "Ty też możesz to zrobic wchodząc na jego profil a następnie klikając przycisk \"łapki\".";
+
+        Notification notification = new Notification(topic, content);
+        newNotification(notification, userTo);
+    }
+
+    @Transactional
+    public void newNotification(Notification notification, User user) {
+        notification.setUser(user);
+        entityManager.merge(notification);
     }
 }

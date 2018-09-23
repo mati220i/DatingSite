@@ -84,7 +84,6 @@ public class UserRestController {
     @RequestMapping(value = "/getUsers", method = RequestMethod.POST)
     public ResponseEntity getUsers(@RequestBody SearchHelper searchHelper) {
         Set<User> users = userService.getUsers(searchHelper);
-        System.out.println(users);
         if(users != null)
             return new ResponseEntity(users, HttpStatus.OK);
         else

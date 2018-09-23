@@ -85,9 +85,17 @@ public class UserService {
             dateTo = new GregorianCalendar(yearTo, now.getMonthValue(), now.getDayOfMonth()).getTime();
         }
 
-        Set<User> result = userRepository.getUsers(sex, dateFrom, dateTo, searchHelper.getMaritalStatuses(), searchHelper.getFigures(),
-                searchHelper.getHeightFrom(), searchHelper.getHeightTo(), searchHelper.getHairColors(), searchHelper.getSmokings(),
-                searchHelper.getAlcohol(), searchHelper.getChildren(), searchHelper.getLookingFors());
+        Set<User> result;
+        if(searchHelper.getLookingFors() != null) {
+             result = userRepository.getUsers(sex, dateFrom, dateTo, searchHelper.getMaritalStatuses(), searchHelper.getFigures(),
+                    searchHelper.getHeightFrom(), searchHelper.getHeightTo(), searchHelper.getHairColors(), searchHelper.getSmokings(),
+                    searchHelper.getAlcohol(), searchHelper.getChildren(), searchHelper.getLookingFors(), searchHelper.getReligions());
+        } else {
+            result = userRepository.getUsers(sex, dateFrom, dateTo, searchHelper.getMaritalStatuses(), searchHelper.getFigures(),
+                    searchHelper.getHeightFrom(), searchHelper.getHeightTo(), searchHelper.getHairColors(), searchHelper.getSmokings(),
+                    searchHelper.getAlcohol(), searchHelper.getChildren(), searchHelper.getReligions());
+        }
+
         Iterator<User> iterator = result.iterator();
 
         if(searchHelper.isWithAvatar()) {
