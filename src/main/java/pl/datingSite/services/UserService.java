@@ -1,11 +1,11 @@
 package pl.datingSite.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 import pl.datingSite.model.Roles;
 import pl.datingSite.model.SearchHelper;
 import pl.datingSite.model.User;
+import pl.datingSite.repository.RolesRepository;
 import pl.datingSite.repository.UserRepository;
 import pl.datingSite.tools.DistanceCalculator;
 
@@ -26,6 +26,19 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    @Transactional
+    public boolean setAdminRole() {
+        Roles adminRole = new Roles("mati", "ADMIN");
+        if(!rolesRepository.getRoles("mati").contains(adminRole)) {
+            entityManager.merge(adminRole);
+            return true;
+        }
+        return false;
+    }
 
     public boolean checkIfExistLogin(String login) {
         String log = userRepository.checkIfExistLogin(login);
@@ -52,16 +65,6 @@ public class UserService {
     }
 
     public User getUser(String username) {
-//        List<User> userList = userRepository.findAll();
-//        Iterator<User> iterator = userList.iterator();
-//
-//        while (iterator.hasNext()) {
-//            User tmp = iterator.next();
-//
-//            if(tmp.getUsername().equals(username))
-//                return tmp;
-//        }
-
         return userRepository.getUserByUserName(username);
     }
 
@@ -97,7 +100,6 @@ public class UserService {
         }
 
         Iterator<User> iterator = result.iterator();
-
         if(searchHelper.isWithAvatar()) {
             while (iterator.hasNext()) {
                 User tmp = iterator.next();
@@ -105,6 +107,7 @@ public class UserService {
                     iterator.remove();
             }
         }
+
         iterator = result.iterator();
         if(searchHelper.isReal()) {
             while (iterator.hasNext()) {
@@ -119,13 +122,16 @@ public class UserService {
 
             while (iterator.hasNext()) {
                 User tmp = iterator.next();
-                System.out.println(distanceCalculator.getDistance(searchHelper.getLocation(), tmp.getCity()) + " > " + searchHelper.getDistance());
                 if(distanceCalculator.getDistance(searchHelper.getLocation(), tmp.getCity()) > searchHelper.getDistance())
                     iterator.remove();
             }
         }
 
         return result;
+    }
+
+    public List<Roles> getRoles(String username) {
+        return rolesRepository.getRoles(username);
     }
 
     public List<User> getAllUsers() {

@@ -85,6 +85,32 @@ public class NotificationService {
     }
 
     @Transactional
+    public void newAcceptFriendNotification(String from, String to) {
+        User userFrom = userRepository.getUserByUserName(from);
+        User userTo = userRepository.getUserByUserName(to);
+
+        String content = "Użytkownik o imieniu " + userTo.getName() + " '" + userTo.getUsername() + "' zaakceptował zaproszenie do znajomych. " +
+                "Od teraz będziesz mieć łatwy dostęp do tego użytkownika z panelu znajomych.";
+        String topic = "Użytkownik " + userTo.getName() + " (" + userTo.getUsername() + ") zaakceptował zaproszenie do znajomych";
+
+        Notification notification = new Notification(topic, content);
+        newNotification(notification, userFrom);
+    }
+
+    @Transactional
+    public void newRemoveFriendNotification(String from, String to) {
+        User userTo = userRepository.getUserByUserName(to);
+        User userFrom = userRepository.getUserByUserName(from);
+
+        String content = "Użytkownik o imieniu " + userTo.getName() + " '" + userTo.getUsername() + "' usunął Cię ze znajomych. " +
+                "Bardzo nam przykro z tego powodu.";
+        String topic = "Użytkownik " + userTo.getName() + " (" + userTo.getUsername() + ") usunął Cię ze znajomych";
+
+        Notification notification = new Notification(topic, content);
+        newNotification(notification, userFrom);
+    }
+
+    @Transactional
     public void newNotification(Notification notification, User user) {
         notification.setUser(user);
         entityManager.merge(notification);

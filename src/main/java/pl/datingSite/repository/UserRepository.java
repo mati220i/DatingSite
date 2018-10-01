@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import pl.datingSite.enums.*;
 import pl.datingSite.model.City;
+import pl.datingSite.model.Roles;
 import pl.datingSite.model.User;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u.email from User u where u.email = :email ")
     public String checkIfExistEmail(@Param("email") String email);
 
-    @Query(value = "update User u set u.enabled = 0 where u.username = :username", nativeQuery = false)
+    @Query(value = "update User u set u.enabled = 0 where u.username = :username")
     @Modifying
     public void deleteAccount(@Param("username") String username);
 
@@ -62,4 +63,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
                               @Param("hairColor") List<HairColor> hairColors, @Param("smoking")List<Smoking> smokings,
                               @Param("alcohol") List<Alcohol> alcohol, @Param("children") List<Children> children,
                               @Param("religion") List<Religion> religions);
+
 }

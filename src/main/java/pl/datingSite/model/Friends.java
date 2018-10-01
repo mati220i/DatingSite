@@ -1,6 +1,7 @@
 package pl.datingSite.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,6 +15,15 @@ public class Friends {
 
     @ElementCollection
     private Set<String> invitationsFrom;
+
+    @ElementCollection
+    private Set<String> sendInvitations;
+
+    public Friends() {
+        this.friendsUsernames = new HashSet<>();
+        this.invitationsFrom = new HashSet<>();
+        this.sendInvitations = new HashSet<>();
+    }
 
     public Long getId() {
         return id;
@@ -39,12 +49,21 @@ public class Friends {
         this.invitationsFrom = invitationsFrom;
     }
 
+    public Set<String> getSendInvitations() {
+        return sendInvitations;
+    }
+
+    public void setSendInvitations(Set<String> sendInvitations) {
+        this.sendInvitations = sendInvitations;
+    }
+
     @Override
     public String toString() {
         return "Friends{" +
                 "id=" + id +
                 ", friendsUsernames=" + friendsUsernames +
                 ", invitationsFrom=" + invitationsFrom +
+                ", sendInvitations=" + sendInvitations +
                 '}';
     }
 }

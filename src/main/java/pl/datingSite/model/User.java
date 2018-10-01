@@ -3,6 +3,7 @@ package pl.datingSite.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import pl.datingSite.enums.*;
+import pl.datingSite.model.messages.MessageBox;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,11 +39,18 @@ public class User {
     @OneToOne
     private City city;
 
+    @JsonIgnore
+    @OneToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private MessageBox messageBox;
+
     @OneToOne
     @Cascade(org.hibernate.annotations.CascadeType.MERGE)
     private AppearanceAndCharacter appearanceAndCharacter;
 
+    @JsonIgnore
     @OneToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Friends friends;
 
     @ElementCollection
@@ -51,6 +59,8 @@ public class User {
     public User() {
         this.enabled = true;
         this.notifications = new HashSet<>();
+        this.friends = new Friends();
+        this.messageBox = new MessageBox();
     }
 
     public User(@NotNull String username, @NotNull String password, @NotNull String email, @NotNull String name, @NotNull String surname, @NotNull City city, @NotNull String sex, Date dateOfBirth) {
@@ -64,6 +74,8 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.enabled = true;
         this.notifications = new HashSet<>();
+        this.friends = new Friends();
+        this.messageBox = new MessageBox();
     }
 
     public Long getId() {
@@ -226,6 +238,14 @@ public class User {
         this.friends = friends;
     }
 
+    public MessageBox getMessageBox() {
+        return messageBox;
+    }
+
+    public void setMessageBox(MessageBox messageBox) {
+        this.messageBox = messageBox;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -249,6 +269,7 @@ public class User {
                 ", fake=" + fake +
                 ", avatar=" + avatar +
                 ", friends=" + friends +
+                ", messageBox=" + messageBox +
                 '}';
     }
 }

@@ -9,7 +9,6 @@ import pl.datingSite.model.SearchHelper;
 import pl.datingSite.model.User;
 import pl.datingSite.services.UserService;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -45,7 +44,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUser", method = RequestMethod.POST)
     public ResponseEntity getUser(@RequestParam(value = "login") String login) {
-        User user = userService.getUser(login);//new BCryptPasswordEncoder().encode(password));
+        User user = userService.getUser(login);
         if(user != null)
             return new ResponseEntity(user, HttpStatus.OK);
         else
@@ -93,6 +92,22 @@ public class UserRestController {
     @RequestMapping(value = "/getUsers", method = RequestMethod.GET)
     public ResponseEntity getUsers() {
         return new ResponseEntity(userService.getAllUsers(), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/getRole", method = RequestMethod.GET)
+    public ResponseEntity getRole(@RequestParam("username") String username) {
+        return new ResponseEntity(userService.getRoles(username), HttpStatus.OK);
+    }
+
+
+
+
+
+
+    @RequestMapping(value = "/setAdminRole", method = RequestMethod.GET)
+    public ResponseEntity setAdminRole() {
+        return new ResponseEntity(userService.setAdminRole(), HttpStatus.OK);
     }
 
 }
