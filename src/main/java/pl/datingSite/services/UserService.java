@@ -2,9 +2,7 @@ package pl.datingSite.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.datingSite.model.Roles;
-import pl.datingSite.model.SearchHelper;
-import pl.datingSite.model.User;
+import pl.datingSite.model.*;
 import pl.datingSite.repository.RolesRepository;
 import pl.datingSite.repository.UserRepository;
 import pl.datingSite.tools.DistanceCalculator;
@@ -14,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -68,7 +67,7 @@ public class UserService {
         return userRepository.getUserByUserName(username);
     }
 
-    public Set<User> getUsers(SearchHelper searchHelper) {
+    public Set<FoundUser> getUsers(SearchHelper searchHelper) {
         String sex = "";
         if(searchHelper.getSex() != null && searchHelper.getSex().equals("Kobiety"))
             sex = "Kobieta";
@@ -127,7 +126,34 @@ public class UserService {
             }
         }
 
-        return result;
+        Set<FoundUser> foundUsers = new HashSet<>();
+        iterator = result.iterator();
+
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+            FoundUser foundUser = new FoundUser(user.getAvatar(), user.getName(), user.getUsername(), user.getDateOfBirth(), user.getCity(), user.isFake());
+            foundUsers.add(foundUser);
+        }
+
+        return foundUsers;
+    }
+
+    public List<ClassifiedUser> getFitUsers(String username, boolean real) {
+        List<User> userList = userRepository.findAll();
+        Iterator<User> iterator = userList.iterator();
+
+        List<ClassifiedUser> fitUsers = new LinkedList<>();
+        Random generator = new Random();
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+
+            float percentage = generator.nextInt(100);
+            ClassifiedUser classifiedUser = new ClassifiedUser(user.getAvatar(), user.getName(), user.getUsername(), user.getDateOfBirth(), user.getCity(), user.isFake(), percentage);
+            fitUsers.add(classifiedUser);
+        }
+
+        Collections.sort(fitUsers, Comparator.comparingInt(o -> (int) o.getFitPercentage()));
+        return fitUsers;
     }
 
     public List<Roles> getRoles(String username) {

@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.datingSite.model.ClassifiedUser;
+import pl.datingSite.model.FoundUser;
 import pl.datingSite.model.SearchHelper;
 import pl.datingSite.model.User;
 import pl.datingSite.services.UserService;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -82,7 +85,11 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUsers", method = RequestMethod.POST)
     public ResponseEntity getUsers(@RequestBody SearchHelper searchHelper) {
-        Set<User> users = userService.getUsers(searchHelper);
+        long millisActualTime = System.currentTimeMillis();
+        Set<FoundUser> users = userService.getUsers(searchHelper);
+        long executionTime = System.currentTimeMillis() - millisActualTime;
+        System.out.println(executionTime);
+
         if(users != null)
             return new ResponseEntity(users, HttpStatus.OK);
         else
@@ -100,7 +107,17 @@ public class UserRestController {
         return new ResponseEntity(userService.getRoles(username), HttpStatus.OK);
     }
 
-
+    @RequestMapping(value = "/getFitUsers", method = RequestMethod.GET)
+    public ResponseEntity getFitUsers(@RequestParam("username") String username, @RequestParam("real") boolean real) {
+        long millisActualTime = System.currentTimeMillis();
+        List<ClassifiedUser> users = userService.getFitUsers(username, real);
+        long executionTime = System.currentTimeMillis() - millisActualTime;
+        System.out.println(executionTime);
+        if(users != null)
+            return new ResponseEntity(users, HttpStatus.OK);
+        else
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
 
 
 
