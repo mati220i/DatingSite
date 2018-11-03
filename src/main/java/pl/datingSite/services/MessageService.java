@@ -10,6 +10,7 @@ import pl.datingSite.repository.ConversationRepository;
 import pl.datingSite.repository.UserRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,11 @@ public class MessageService {
 
     @Transactional
     public Set<Conversation> getConversations(String username) {
-        return userRepository.getUserByUserName(username).getMessageBox().getConversationList();
+        Set<Conversation> conversations = userRepository.getUserByUserName(username).getMessageBox().getConversationList();
+        if(conversations != null)
+            return conversations;
+        else
+            throw new NoResultException("Not found Conversations");
     }
 
     @Transactional
@@ -65,7 +70,10 @@ public class MessageService {
         entityManager.persist(receiverMessage);
 
         Set<Conversation> conversations = getConversations(sender.getUsername());
-        return conversations;
+        if(conversations != null)
+            return conversations;
+        else
+            throw new NoResultException("Conversations not found");
     }
 
     @Transactional

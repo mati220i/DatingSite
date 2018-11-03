@@ -7,6 +7,7 @@ import pl.datingSite.model.User;
 import pl.datingSite.repository.UserRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Set;
@@ -44,7 +45,12 @@ public class FriendsService {
         entityManager.merge(userFrom);
         entityManager.merge(userTo);
 
-        return userFrom.getFriends();
+        Friends friends = userFrom.getFriends();
+
+        if(friends != null)
+            return friends;
+        else
+            throw new NoResultException("Not found friends");
     }
 
     @Transactional
@@ -57,7 +63,13 @@ public class FriendsService {
 
         entityManager.merge(userFrom);
         entityManager.merge(userTo);
-        return userFrom.getFriends();
+
+        Friends friends = userFrom.getFriends();
+
+        if(friends != null)
+            return friends;
+        else
+            throw new NoResultException("Not found friends");
     }
 
     @Transactional
@@ -74,7 +86,13 @@ public class FriendsService {
         notificationService.newAcceptFriendNotification(from, to);
         entityManager.merge(userFrom);
         entityManager.merge(userTo);
-        return userTo.getFriends();
+
+        Friends friends = userTo.getFriends();
+
+        if(friends != null)
+            return friends;
+        else
+            throw new NoResultException("Not found friends");
     }
 
     @Transactional
@@ -88,11 +106,16 @@ public class FriendsService {
         notificationService.newRemoveFriendNotification(who, from);
         entityManager.merge(userFrom);
         entityManager.merge(userWho);
-        return userFrom.getFriends();
+
+        Friends friends = userFrom.getFriends();
+        if(friends != null)
+            return friends;
+        else
+            throw new NoResultException("Not found friends");
     }
 
     public Friends getFriends(String username) {
-        return userRepository.getUserByUserName(username).getFriends();
+        return userRepository.getUserByUserNameWithFriends(username).getFriends();
     }
 
 }

@@ -2,12 +2,14 @@ package pl.datingSite.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.datingSite.logic.SmartFitAlgorithm;
 import pl.datingSite.model.*;
 import pl.datingSite.repository.RolesRepository;
 import pl.datingSite.repository.UserRepository;
 import pl.datingSite.tools.DistanceCalculator;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -28,6 +30,9 @@ public class UserService {
 
     @Autowired
     private RolesRepository rolesRepository;
+
+    @Autowired
+    private SmartFitAlgorithm smartFitAlgorithm;
 
     @Transactional
     public boolean setAdminRole() {
@@ -64,7 +69,19 @@ public class UserService {
     }
 
     public User getUser(String username) {
-        return userRepository.getUserByUserName(username);
+        User user = userRepository.getUserByUserName(username);
+        if(user != null)
+            return user;
+        else
+            throw new NoResultException("User not found");
+    }
+
+    public User getUserWithAllData(String username) {
+        User user = userRepository.getUserByUserNameWithAppearanceAndCharacter(username);
+        if(user != null)
+            return user;
+        else
+            throw new NoResultException("User not found");
     }
 
     public Set<FoundUser> getUsers(SearchHelper searchHelper) {
@@ -135,25 +152,21 @@ public class UserService {
             foundUsers.add(foundUser);
         }
 
-        return foundUsers;
+        if(foundUsers != null)
+            return foundUsers;
+        else
+            throw new NoResultException("Users not found");
     }
 
     public List<ClassifiedUser> getFitUsers(String username, boolean real) {
+        User searchingUser = userRepository.getUserByUserName(username);
         List<User> userList = userRepository.findAll();
-        Iterator<User> iterator = userList.iterator();
 
-        List<ClassifiedUser> fitUsers = new LinkedList<>();
-        Random generator = new Random();
-        while (iterator.hasNext()) {
-            User user = iterator.next();
-
-            float percentage = generator.nextInt(100);
-            ClassifiedUser classifiedUser = new ClassifiedUser(user.getAvatar(), user.getName(), user.getUsername(), user.getDateOfBirth(), user.getCity(), user.isFake(), percentage);
-            fitUsers.add(classifiedUser);
-        }
-
-        Collections.sort(fitUsers, Comparator.comparingInt(o -> (int) o.getFitPercentage()));
-        return fitUsers;
+        List<ClassifiedUser> users = smartFitAlgorithm.getFittedUsers(searchingUser, userList, real);
+        if (users != null)
+            return users;
+        else
+            throw new NoResultException("Users not found");
     }
 
     public List<Roles> getRoles(String username) {
@@ -166,7 +179,11 @@ public class UserService {
 
     @Transactional
     public User updateUser(User user) {
-        return entityManager.merge(user);
+        User updatedUser = entityManager.merge(user);
+        if(updatedUser != null)
+            return updatedUser;
+        else
+            throw new NoResultException("User not found");
     }
 
     @Transactional

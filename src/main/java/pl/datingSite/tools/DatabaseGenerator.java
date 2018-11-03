@@ -145,10 +145,11 @@ public class DatabaseGenerator {
 
             setAvatar(true, image);
 
-            System.out.println(user);
             Roles role = new Roles(user.getUsername(), "USER");
             entityManager.merge(user);
             entityManager.persist(role);
+            System.out.println(i + 1 + " from " + quantity);
+            user = null;
         }
     }
 
@@ -168,16 +169,19 @@ public class DatabaseGenerator {
         prepareNames();
         prepareSurnames();
 
+        System.out.println("Prepare 1 * " + femaleImages.size() + " female users [total = " + (1 * femaleImages.size()) + "]");
         generateWoman(true, nearCity, true);
-        generateWoman(false, nearCity, true);
-        generateWoman(false, nearCity, false);
-        generateMan(true, nearCity, true);
-        generateMan(false, nearCity, true);
-        generateMan(false, nearCity, false);
+        //generateWoman(false, nearCity, true);
+        //generateWoman(false, nearCity, false);
+        //System.out.println("Prepare 1 * " + maleImages.size() + " male users [total = " + (1 * maleImages.size()) + "]");
+        //generateMan(true, nearCity, true);
+        //generateMan(false, nearCity, true);
+        //generateMan(false, nearCity, false);
 
     }
 
-    private void generateWoman(boolean nearby, City nearCity, boolean withAvatar) {
+    @Transactional
+    protected void generateWoman(boolean nearby, City nearCity, boolean withAvatar) {
         for(int i = 0; i < femaleImages.size(); i++) {
             File woman = femaleImages.get(i);
 
@@ -213,11 +217,17 @@ public class DatabaseGenerator {
             user.getAppearanceAndCharacter().setStyle(generateStyle());
 
             setAvatar(withAvatar, woman);
-            System.out.println(user);
+
+            Roles role = new Roles(user.getUsername(), "USER");
+            entityManager.merge(user);
+            entityManager.persist(role);
+            user = null;
+            System.out.println(i + 1 + " from " + femaleImages.size());
         }
     }
 
-    private void generateMan(boolean near, City nearCity, boolean withAvatar) {
+    @Transactional
+    protected void generateMan(boolean near, City nearCity, boolean withAvatar) {
         for(int i = 0; i < maleImages.size(); i++) {
             File man = maleImages.get(i);
 
@@ -252,6 +262,12 @@ public class DatabaseGenerator {
             user.getAppearanceAndCharacter().setStyle(generateStyle());
 
             setAvatar(withAvatar, man);
+
+            Roles role = new Roles(user.getUsername(), "USER");
+            entityManager.merge(user);
+            entityManager.persist(role);
+            System.out.println(i + 1 + " from " + maleImages.size());
+            user = null;
         }
     }
 

@@ -1,5 +1,6 @@
 package pl.datingSite.web;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +12,15 @@ import pl.datingSite.model.SearchHelper;
 import pl.datingSite.model.User;
 import pl.datingSite.services.UserService;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/user")
 public class UserRestController {
+
+    final static Logger logger = Logger.getLogger(UserRestController.class);
 
     @Autowired
     private UserService userService;
@@ -47,34 +51,52 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUser", method = RequestMethod.POST)
     public ResponseEntity getUser(@RequestParam(value = "login") String login) {
-        User user = userService.getUser(login);
-        if(user != null)
+        try {
+            User user = userService.getUser(login);
             return new ResponseEntity(user, HttpStatus.OK);
-        else
+        } catch (NoResultException e) {
+            logger.warn(e.getMessage());
             return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
+
+    @RequestMapping(value = "/getUserWithAllData", method = RequestMethod.POST)
+    public ResponseEntity getUserWithAllData(@RequestParam(value = "login") String login) {
+        try {
+            User user = userService.getUserWithAllData(login);
+            return new ResponseEntity(user, HttpStatus.OK);
+        } catch (NoResultException e) {
+            logger.warn(e.getMessage());
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.PUT)
     public ResponseEntity updateUser(@RequestBody User user) {
-        String password = new BCryptPasswordEncoder().encode(user.getPassword());
-        user.setPassword(password);
-        User returnedUser = userService.updateUser(user);
-        if(returnedUser != null)
+        try {
+            String password = new BCryptPasswordEncoder().encode(user.getPassword());
+            user.setPassword(password);
+            User returnedUser = userService.updateUser(user);
             return new ResponseEntity(returnedUser, HttpStatus.OK);
-        else
+        } catch (NoResultException e) {
+            logger.warn(e.getMessage());
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @RequestMapping(value = "/changePassword", method = RequestMethod.PUT)
     public ResponseEntity changePassword(@RequestBody User user) {
-        String password = new BCryptPasswordEncoder().encode(user.getPassword());
-        user.setPassword(password);
+        try {
+            String password = new BCryptPasswordEncoder().encode(user.getPassword());
+            user.setPassword(password);
 
-        User returnedUser = userService.updateUser(user);
-        if(returnedUser != null)
+            User returnedUser = userService.updateUser(user);
             return new ResponseEntity(returnedUser, HttpStatus.OK);
-        else
+        } catch (NoResultException e) {
+            logger.warn("Change password failed: " + e.getMessage());
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
@@ -85,15 +107,19 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUsers", method = RequestMethod.POST)
     public ResponseEntity getUsers(@RequestBody SearchHelper searchHelper) {
-        long millisActualTime = System.currentTimeMillis();
-        Set<FoundUser> users = userService.getUsers(searchHelper);
-        long executionTime = System.currentTimeMillis() - millisActualTime;
-        System.out.println(executionTime);
+        try {
+            long millisActualTime = System.currentTimeMillis();
 
-        if(users != null)
+            Set<FoundUser> users = userService.getUsers(searchHelper);
+
+            long executionTime = System.currentTimeMillis() - millisActualTime;
+            System.out.println(executionTime);
+
             return new ResponseEntity(users, HttpStatus.OK);
-        else
+        } catch (NoResultException e) {
+            logger.warn(e.getMessage());
             return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/getUsers", method = RequestMethod.GET)
@@ -109,14 +135,19 @@ public class UserRestController {
 
     @RequestMapping(value = "/getFitUsers", method = RequestMethod.GET)
     public ResponseEntity getFitUsers(@RequestParam("username") String username, @RequestParam("real") boolean real) {
-        long millisActualTime = System.currentTimeMillis();
-        List<ClassifiedUser> users = userService.getFitUsers(username, real);
-        long executionTime = System.currentTimeMillis() - millisActualTime;
-        System.out.println(executionTime);
-        if(users != null)
+        try {
+            long millisActualTime = System.currentTimeMillis();
+
+            List<ClassifiedUser> users = userService.getFitUsers(username, real);
+
+            long executionTime = System.currentTimeMillis() - millisActualTime;
+            System.out.println(executionTime);
+
             return new ResponseEntity(users, HttpStatus.OK);
-        else
+        } catch (NoResultException e) {
+            logger.warn(e.getMessage());
             return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
 

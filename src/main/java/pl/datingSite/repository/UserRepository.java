@@ -19,6 +19,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.username = :username")
     public User getUserByUserName(@Param("username")String username);
 
+    @Query("select u from User u join fetch u.friends f where u.username = :username and u.friends = f")
+    public User getUserByUserNameWithFriends(@Param("username") String username);
+
+    @Query("select u from User u join fetch u.appearanceAndCharacter a where u.username = :username and u.appearanceAndCharacter = a")
+    public User getUserByUserNameWithAppearanceAndCharacter(@Param("username") String username);
+
     @Query("select u.username from User u where u.username = :username ")
     public String checkIfExistLogin(@Param("username") String username);
 

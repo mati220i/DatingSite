@@ -1,7 +1,11 @@
 package pl.datingSite.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 import pl.datingSite.enums.*;
 import pl.datingSite.model.messages.MessageBox;
 
@@ -33,18 +37,19 @@ public class User {
     private boolean enabled, fake;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch =  FetchType.LAZY)
     private Set<Notification> notifications;
 
     @OneToOne
     private City city;
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private MessageBox messageBox;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @Cascade(org.hibernate.annotations.CascadeType.MERGE)
     private AppearanceAndCharacter appearanceAndCharacter;
 
