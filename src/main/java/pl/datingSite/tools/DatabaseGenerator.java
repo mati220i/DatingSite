@@ -169,14 +169,14 @@ public class DatabaseGenerator {
         prepareNames();
         prepareSurnames();
 
-        System.out.println("Prepare 1 * " + femaleImages.size() + " female users [total = " + (1 * femaleImages.size()) + "]");
+        System.out.println("Prepare 3 * " + femaleImages.size() + " female users [total = " + (3 * femaleImages.size()) + "]");
         generateWoman(true, nearCity, true);
-        //generateWoman(false, nearCity, true);
-        //generateWoman(false, nearCity, false);
-        //System.out.println("Prepare 1 * " + maleImages.size() + " male users [total = " + (1 * maleImages.size()) + "]");
-        //generateMan(true, nearCity, true);
-        //generateMan(false, nearCity, true);
-        //generateMan(false, nearCity, false);
+        generateWoman(false, nearCity, true);
+        generateWoman(false, nearCity, false);
+        System.out.println("Prepare 3 * " + maleImages.size() + " male users [total = " + (3 * maleImages.size()) + "]");
+        generateMan(true, nearCity, true);
+        generateMan(false, nearCity, true);
+        generateMan(false, nearCity, false);
 
     }
 

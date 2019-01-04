@@ -143,6 +143,8 @@ public class UserService {
             }
         }
 
+        result = result.stream().filter(user -> user.isEnabled() == true).collect(Collectors.toSet());
+
         Set<FoundUser> foundUsers = new HashSet<>();
         iterator = result.iterator();
 
@@ -160,7 +162,13 @@ public class UserService {
 
     public List<ClassifiedUser> getFitUsers(String username, boolean real) {
         User searchingUser = userRepository.getUserByUserName(username);
-        List<User> userList = userRepository.findAll();
+        List<User> userList = null;
+
+        if(real)
+            userList = userRepository.getUsersByFakeIs(!real);
+        else
+            userList = userRepository.findAll();
+
 
         List<ClassifiedUser> users = smartFitAlgorithm.getFittedUsers(searchingUser, userList, real);
         if (users != null)

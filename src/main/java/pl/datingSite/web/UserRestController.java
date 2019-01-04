@@ -113,7 +113,7 @@ public class UserRestController {
             Set<FoundUser> users = userService.getUsers(searchHelper);
 
             long executionTime = System.currentTimeMillis() - millisActualTime;
-            System.out.println(executionTime);
+            System.out.println("Get Users: " + executionTime);
 
             return new ResponseEntity(users, HttpStatus.OK);
         } catch (NoResultException e) {
@@ -141,7 +141,7 @@ public class UserRestController {
             List<ClassifiedUser> users = userService.getFitUsers(username, real);
 
             long executionTime = System.currentTimeMillis() - millisActualTime;
-            System.out.println(executionTime);
+            System.out.println("Get fit users: " + executionTime);
 
             return new ResponseEntity(users, HttpStatus.OK);
         } catch (NoResultException e) {

@@ -70,4 +70,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
                               @Param("alcohol") List<Alcohol> alcohol, @Param("children") List<Children> children,
                               @Param("religion") List<Religion> religions);
 
+    public List<User> getUsersByFakeIs(boolean fake);
+
 }

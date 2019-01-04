@@ -60,6 +60,10 @@ public class SmartFitAlgorithm {
         this.users = users.stream().filter(user1 -> user1.isFake() == false).collect(Collectors.toList());
     }
 
+    private void filterEnabledAccounts() {
+        this.users = users.stream().filter(user1 -> user1.isEnabled() == true).collect(Collectors.toList());
+    }
+
     private float calculateLocation(User userFromDB) {
         if(user.getCity() != null && userFromDB.getCity() != null) {
             double distance = distanceCalculator.getDistance(user.getCity(), userFromDB.getCity());
@@ -374,6 +378,7 @@ public class SmartFitAlgorithm {
         this.distanceCalculator = new DistanceCalculator(user.getCity(), user.getCity(), cityRepository.findAll());
 
         filterSex();
+        filterEnabledAccounts();
 
         if(real)
             filterReal();
