@@ -1,10 +1,10 @@
 # DatingSite
 
 # [PL]
-Aplikacja serwera będąca celem wykonania pracy inżynierskiej, w której należało wykonać algorytm automatycznego kojarzenia par. W aplikacji zostało przygotowane kila funkcji głównych oraz pobocznych. Z dostępnych funkcjonalności udostępniony jest panel logowania, rejestracji, główny z podziałem na sekcje dla użytkowników i administratora, panel ustawień, powiadomień, znajomych, skrzynka z wiadomościami, panel wyświetlania profilu użytkownika. Aplikacja została napisana przy użyciu Spring Boot i Spring Data Jpa. Do przechowywania danych została użyta baza danych Oracle.
+Aplikacja serwera będąca celem wykonania pracy inżynierskiej, w której należało wykonać algorytm automatycznego kojarzenia par. W aplikacji zostało przygotowane kila funkcji głównych oraz pobocznych. Z dostępnych funkcjonalności udostępniony jest panel logowania, rejestracji, główny z podziałem na sekcje dla użytkowników i administratora, panel ustawień, powiadomień, znajomych, skrzynka z wiadomościami, panel wyświetlania profilu użytkownika. Aplikacja została napisana przy użyciu Spring Boot, Spring Security i Spring Data Jpa. Do przechowywania danych została użyta baza danych Oracle.
 
 # [EN]
-The server application which is the purpose of the engineering work in which the algorithm of automatic pairing should have been performed. In the application, several main and side functions have been prepared. The available functionalities include the login and registration panel, the main one divided into sections for users and administrators, the settings panel, notifications, friends, the message box, the user profile display panel. The application was written using Spring Boot and Spring Data Jpa. The Oracle database was used for data storage.
+The server application which is the purpose of the engineering work in which the algorithm of automatic pairing should have been performed. In the application, several main and side functions have been prepared. The available functionalities include the login and registration panel, the main one divided into sections for users and administrators, the settings panel, notifications, friends, the message box, the user profile display panel. The application was written using Spring Boot, Spring Security and Spring Data Jpa. The Oracle database was used for data storage.
 
 
 ## Endpoints
